@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pavel.kurilyuk.book.hellobootdemo.dto.BookDto;
 import pavel.kurilyuk.book.hellobootdemo.entity.Book;
 import pavel.kurilyuk.book.hellobootdemo.service.BookService;
+import pavel.kurilyuk.book.hellobootdemo.util.DtoUtil;
 
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
@@ -37,7 +38,7 @@ public class BookController {
 
     @PostMapping
     public void add(@RequestBody BookDto bookDto) {
-        Book book = bookDtoToEntity(bookDto);
+        Book book = DtoUtil.bookDtoToEntity(bookDto);
         bookService.save(book);
     }
 
@@ -47,13 +48,9 @@ public class BookController {
     }
 
     @PutMapping("/{bookId}")
-    public Book update(@PathVariable("bookId") Long id, Book book) {
-        return null;
-    }
-
-    private Book bookDtoToEntity(BookDto bookDto) {
-        Book book = new Book(bookDto.getTitle(), bookDto.getPrice(), bookDto.getYear());
-        book.setDescription(bookDto.getDescription());
-        return  book;
+    public Book update(@PathVariable("bookId") Long id, @RequestBody BookDto bookDto) {
+        Book book = DtoUtil.bookDtoToEntity(bookDto);
+        book.setId(id);
+        return bookService.update(book);
     }
 }
